@@ -33,9 +33,6 @@ require 'vendor/autoload.php';
 
 $parser = new ContaoCommunityAlliance\BitbucketPayload\BitbucketPayloadParser();
 
-// if you have set a secret in the webhook, set it to the parser to validate the signature
-$parser->setSecret('...');
-
 $event  = $parser->parsePhp();
 ```
 
@@ -50,9 +47,6 @@ class MyController
     {
         $parser = new \ContaoCommunityAlliance\BitbucketPayload\BitbucketPayloadParser();
 
-        // if you have set a secret in the webhook, set it to the parser to validate the signature
-        $parser->setSecret('...');
-
         $event  = $parser->parseRequest($request);
     }
 }
@@ -61,14 +55,9 @@ class MyController
 ### ... in any other environment
 
 ```php
-$eventName = '...'; // The event name, usually the X-Github-Event header.
 $payload   = '...'; // The bitbucket payload, usually the POST body.
-$signature = '...'; // The payload signature, usually the X-Hub-Signature header.
 
 $parser = new ContaoCommunityAlliance\BitbucketPayload\BitbucketPayloadParser();
 
-// if you have set a secret in the webhook, set it to the parser to validate the signature
-$parser->setSecret('...');
-
-$event  = $parser->parse($eventName, $payload, $signature);
+$event  = $parser->parse($payload);
 ```
