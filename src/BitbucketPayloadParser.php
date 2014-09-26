@@ -67,7 +67,7 @@ class BitbucketPayloadParser
      */
     public function parsePhp()
     {
-        $payload = file_get_contents('php://input');
+        $payload = $_POST['payload'];
 
         return $this->parse($payload);
     }
@@ -87,7 +87,7 @@ class BitbucketPayloadParser
             );
         }
 
-        $payload = $request->getContent();
+        $payload = $request->request->get('payload');
 
         return $this->parse($payload);
     }
