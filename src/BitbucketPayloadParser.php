@@ -2,7 +2,11 @@
 
 namespace ContaoCommunityAlliance\BitbucketPayload;
 
+use ContaoCommunityAlliance\BitbucketPayload\Event\BitbucketEvent;
 use ContaoCommunityAlliance\BitbucketPayload\Event\PostEvent;
+use JMS\Serializer\EventDispatcher\EventDispatcher;
+use JMS\Serializer\EventDispatcher\Events;
+use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,7 +48,29 @@ class BitbucketPayloadParser
     public function getSerializer()
     {
         if (!$this->serializer) {
-            $this->serializer = SerializerBuilder::create()->build();
+            $builder = SerializerBuilder::create();
+            $builder->configureListeners(
+                function (EventDispatcher $eventDispatcher) {
+                    $eventDispatcher->addListener(
+                        Events::PRE_SERIALIZE,
+                        function (PreSerializeEvent $event) {
+                            /*
+                             * Fixup issue 292, see https://github.com/schmittjoh/JMSSerializerBundle/issues/292
+                             */
+                            $object = $event->getObject();
+
+                            if (is_object($object) && $object instanceof BitbucketEvent) {
+                                $class = get_class($object);
+
+                                if ($class !== $event->getType()['name']) {
+                                    $event->setType($class);
+                                }
+                            }
+                        }
+                    );
+                }
+            );
+            $this->serializer = $builder->build();
         }
         return $this->serializer;
     }
