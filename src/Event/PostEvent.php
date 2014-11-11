@@ -6,7 +6,7 @@ use ContaoCommunityAlliance\BitbucketPayload\Meta\Repository;
 use ContaoCommunityAlliance\BitbucketPayload\Meta\Commit;
 use JMS\Serializer\Annotation as Serializer;
 
-class PostEvent
+class PostEvent extends BitbucketEvent
 {
     /**
      * @var string
