@@ -61,8 +61,9 @@ class BitbucketPayloadParser
 
                             if (is_object($object) && $object instanceof BitbucketEvent) {
                                 $class = get_class($object);
+                                $type  = $event->getType();
 
-                                if ($class !== $event->getType()['name']) {
+                                if ($class !== $type['name']) {
                                     $event->setType($class);
                                 }
                             }
